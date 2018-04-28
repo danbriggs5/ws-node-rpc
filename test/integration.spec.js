@@ -126,6 +126,23 @@ test('Rpc', (t1) => {
 		server.close();
 	});
 
+	t1.test('on client open', async (t) => {
+		const port = getUniquePort();
+		const server = Server({ port }, {});
+		const client = Client(`ws://localhost:${port}`);
+
+		let hasOpened = false;
+
+		client.on('open', () => {
+			hasOpened = true;
+		});
+
+		await timeout(100);
+		t.ok(hasOpened, 'client fires opened event');
+		t.end();
+		server.close();
+	});
+
 
 	t1.test('on client close', async (t) => {
 		const port = getUniquePort();
@@ -185,6 +202,7 @@ test('Rpc', (t1) => {
 		t.ok(hasClosed, 'client fires closed event');
 		t.end();
 		server.close();
+		client.close();
 	});
 
 
